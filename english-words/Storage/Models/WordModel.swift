@@ -7,13 +7,20 @@
 
 import Foundation
 
-struct WordList: Codable {
-    let words: [Word]
+struct WordsResponse: Codable, Equatable {
+    let words: [WordModel]
 }
 
-struct Word: Codable {
+struct WordModel: Codable, Equatable {
     let id: Int
     let categoryId: Int
-    let ENG: String
-    let TR: String
+    let eng: String
+    let tr: String
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case categoryId
+        case eng = "ENG"
+        case tr = "TR"
+    }
 }

@@ -52,7 +52,7 @@ final class CoreDataDatabase : LocalDatabaseProtocol {
               }
     }
     
-    func toggleFavorite(id: Int) {
+    func toggleFavorite(id: Int) -> Bool {
         let context = container.viewContext
          let request: NSFetchRequest<Item> = Item.fetchRequest()
          request.predicate = NSPredicate(format: "id == %d", id)
@@ -72,6 +72,8 @@ final class CoreDataDatabase : LocalDatabaseProtocol {
          } catch {
              print("Failed to toggle favorite: \(error)")
          }
+        return true
+
      }
     }
     

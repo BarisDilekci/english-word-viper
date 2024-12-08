@@ -20,8 +20,8 @@ class HomeRouter: PresenterToRouterHomeProtocol {
         
         viewController.presenter = presenter
         viewController.presenter?.router = HomeRouter()
-        viewController.presenter?.view = viewController
-        viewController.presenter?.interactor = HomeInteractor()
+        viewController.presenter?.view = viewController 
+        viewController.presenter?.interactor = HomeInteractor(coreDataManager: CoreDataDatabase())
         viewController.presenter?.interactor?.presenter = presenter
         
         return viewController

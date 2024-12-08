@@ -9,5 +9,5 @@ import Foundation
 
 protocol LocalDatabaseProtocol {
     func loadFavoriteWords() -> Set<Int>
-    func toggleFavorite(id : Int)
+    func toggleFavorite(id : Int) -> Bool
 }

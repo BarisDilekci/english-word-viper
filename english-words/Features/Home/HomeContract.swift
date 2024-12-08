@@ -10,30 +10,38 @@ import Foundation
 
 
 // MARK: View Output (Presenter -> View)
-protocol PresenterToViewHomeProtocol {
-   
+protocol PresenterToViewHomeProtocol : AnyObject {
+    func updateFavoriteButton(isFavorite: Bool)
+    func showWords(_ words: [WordModel]) 
+    func showError(_ message: String)
+
 }
 
 
 // MARK: View Input (View -> Presenter)
-protocol ViewToPresenterHomeProtocol {
+protocol ViewToPresenterHomeProtocol : AnyObject {
     
     var view: PresenterToViewHomeProtocol? { get set }
     var interactor: PresenterToInteractorHomeProtocol? { get set }
     var router: PresenterToRouterHomeProtocol? { get set }
+    
+    func didTapOnFavoriteButton(id: Int)
 }
 
 
 // MARK: Interactor Input (Presenter -> Interactor)
 protocol PresenterToInteractorHomeProtocol {
-    
     var presenter: InteractorToPresenterHomeProtocol? { get set }
+    func toggleFavorite(id: Int)
+    func fetchWordsFromLocalJson()
 }
 
 
 // MARK: Interactor Output (Interactor -> Presenter)
-protocol InteractorToPresenterHomeProtocol {
-    
+protocol InteractorToPresenterHomeProtocol: AnyObject {
+    func didTapOnFavoriteButton(isFavorite: Bool)
+    func didFetchWords(_ words: [WordModel])
+    func didFailToFetchWords(with error: String)
 }
 
 
