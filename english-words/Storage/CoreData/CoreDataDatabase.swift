@@ -13,7 +13,7 @@ final class CoreDataDatabase : LocalDatabaseProtocol {
     static let shared = CoreDataDatabase()
     
     private(set) var container: NSPersistentContainer
-    @Published var favoriteWords: Set<Int> = []
+    private var favoriteWords: Set<Int> = []
     
     private init() {
           container = NSPersistentContainer(name: "EnglishWord")
@@ -68,14 +68,14 @@ final class CoreDataDatabase : LocalDatabaseProtocol {
                  newItem.isFavorite = true
              }
              try context.save()
-             loadFavoriteWords()
+             favoriteWords =  loadFavoriteWords()
+             return true
          } catch {
              print("Failed to toggle favorite: \(error)")
+             return false
          }
-        return true
-
      }
-    }
+}
     
     
 

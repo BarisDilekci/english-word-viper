@@ -14,6 +14,9 @@ final class HomeViewController: UIViewController, WordCellProtocol {
     var presenter: ViewToPresenterHomeProtocol?
     private var words: [WordModel] = []
     private var favoriteWords: Set<Int> = []
+    private var isSearching : Bool = false
+    private var filteredWords: [WordModel] = []
+
     
     // MARK: - UI Components
     private lazy var tableView: UITableView = {
@@ -51,6 +54,7 @@ final class HomeViewController: UIViewController, WordCellProtocol {
 
     // MARK: - UI Configuration
     private func setupUI() {
+        searchBar.delegate = self
         view.backgroundColor = .white
         view.addSubview(searchBar)
         view.addSubview(tableView)
@@ -92,16 +96,34 @@ final class HomeViewController: UIViewController, WordCellProtocol {
     }
 }
 
+//MARK: - UISearchBarDelegate
+extension HomeViewController : UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+         if searchText.isEmpty {
+             isSearching = false
+             filteredWords = []
+         } else {
+             isSearching = true
+             filteredWords = words.filter {
+                 $0.eng.localizedCaseInsensitiveContains(searchText) ||
+                 $0.tr.localizedCaseInsensitiveContains(searchText)
+             }
+         }
+         tableView.reloadData()
+     }
+}
+
 // MARK: - UITableViewDelegate ve UITableViewDataSource
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return words.count
+        return isSearching ? filteredWords.count : words.count
+
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: WordCell.identifier, for: indexPath) as! WordCell
-        let word = words[indexPath.row]
+        let word = isSearching ? filteredWords[indexPath.row] : words[indexPath.row]
         
         cell.configure(word: word, isFavorite: favoriteWords.contains(word.id))
         cell.delegate = self

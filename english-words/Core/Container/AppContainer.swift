@@ -16,6 +16,7 @@ final class AppContainer {
     
     private init () {
         container = Container()
+        registerDependencies()
     }
     
     private func registerDependencies() {
@@ -24,7 +25,11 @@ final class AppContainer {
         }.inObjectScope(.container)
     }
     
-    func resolve<T>(_ type: T.Type) -> T? {
-           return container.resolve(type)
-       }
+    
+    func resolve<T>(_ type: T.Type) -> T {
+        guard let resolved = container.resolve(type) else {
+            fatalError("Dependency of type \(type) could not be resolved.")
+        }
+        return resolved
+    }
 }
