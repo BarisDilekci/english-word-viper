@@ -30,7 +30,6 @@ class HomeInteractor: PresenterToInteractorHomeProtocol {
             return
         }
         
-        // JSON'dan decode edilmiş `WordsResponse` nesnesindeki `words` listesi Presenter'a iletiliyor
         presenter?.didFetchWords(response.words)
     }
 
