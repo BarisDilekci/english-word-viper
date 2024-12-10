@@ -29,27 +29,46 @@ final class HomeViewController: UIViewController, WordCellProtocol {
         return tableView
     }()
     
-    // Loading indicator
-    private var loadingIndicator: UIActivityIndicatorView = {
+    private lazy var loadingIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .large)
         indicator.translatesAutoresizingMaskIntoConstraints = false
         indicator.color = .gray
         return indicator
     }()
     
-    // Search bar
-    private var searchBar: UISearchBar = {
+    private lazy var searchBar: UISearchBar = {
         let searchBar = UISearchBar()
         searchBar.placeholder = "Search for words"
         searchBar.translatesAutoresizingMaskIntoConstraints = false
+        searchBar.searchBarStyle = .minimal
         return searchBar
     }()
+
+    private lazy var filterButton: UIBarButtonItem = {
+        let menu = UIMenu(title: "Filter Options", options: .displayInline, children: [
+            UIAction(title: "Favorites", image: UIImage(systemName: "star.fill")) { _ in
+                self.filterFavorites()
+            },
+            UIAction(title: "All Words", image: UIImage(systemName: "list.bullet")) { _ in
+                self.showAllWords()
+            }
+        ])
+        let button = UIBarButtonItem(
+            image: UIImage(systemName: "line.horizontal.3.decrease.circle"),
+            menu: menu
+        )
+        button.tintColor = .systemBlue
+        return button
+    }()
+
     
     // MARK: - Lifecycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         loadWordsFromJson()
+        setupNavigationBar() 
+
     }
 
     // MARK: - UI Configuration
@@ -75,6 +94,11 @@ final class HomeViewController: UIViewController, WordCellProtocol {
             loadingIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
+    private func setupNavigationBar() {
+        navigationItem.title = "Words List"
+        navigationItem.largeTitleDisplayMode = .automatic
+        navigationItem.rightBarButtonItem = filterButton
+    }
     
     private func loadWordsFromJson() {
         loadingIndicator.startAnimating()
@@ -94,6 +118,19 @@ final class HomeViewController: UIViewController, WordCellProtocol {
             favoriteWords.insert(wordID)
         }
     }
+    private func filterFavorites() {
+        isSearching = true
+        filteredWords = words.filter { favoriteWords.contains($0.id) }
+        tableView.reloadData()
+    }
+    
+    private func showAllWords() {
+        isSearching = false
+        filteredWords = []
+        tableView.reloadData()
+    }
+    
+   
 }
 
 //MARK: - UISearchBarDelegate
@@ -152,3 +189,7 @@ extension HomeViewController: PresenterToViewHomeProtocol {
         print(isFavorite)
     }
 }
+
+//#Preview {
+//    HomeViewController()
+//}
